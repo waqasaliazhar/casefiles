@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pizza Problem</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap');
+
+  :root {
+    --bg: #faf9f7; --text: #1a1a1a; --accent: #c53a2a; --accent2: #2a6bc5;
+    --accent3: #1a8a5c; --muted: #6b6b6b; --border: #e0ddd8;
+    --card-bg: #ffffff; --highlight: #fff8e1;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Merriweather',Georgia,serif; background:var(--bg); color:var(--text); line-height:1.85; font-size:17px; }
+
+  .hero { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:#fff; padding:80px 20px 60px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 50%,rgba(197,58,42,.15) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(42,107,197,.15) 0%,transparent 50%); }
+  .hero-label { font-family:'Source Sans Pro',sans-serif; text-transform:uppercase; letter-spacing:3px; font-size:13px; color:rgba(255,255,255,.6); margin-bottom:20px; position:relative; }
+  .hero h1 { font-size:clamp(32px,5vw,52px); font-weight:700; line-height:1.2; max-width:800px; margin:0 auto 20px; position:relative; }
+  .hero .subtitle { font-size:18px; font-weight:300; font-style:italic; color:rgba(255,255,255,.7); max-width:600px; margin:0 auto; position:relative; }
+
+  .article-container { max-width:740px; margin:0 auto; padding:50px 20px 80px; }
+  .drop-cap::first-letter { float:left; font-size:72px; line-height:60px; padding-right:10px; padding-top:4px; color:var(--accent); font-weight:700; }
+  p { margin-bottom:22px; }
+  h2 { font-family:'Source Sans Pro',sans-serif; font-size:28px; font-weight:700; margin:50px 0 20px; border-bottom:2px solid var(--accent); padding-bottom:8px; }
+  h3 { font-family:'Source Sans Pro',sans-serif; font-size:22px; font-weight:600; margin:35px 0 15px; color:var(--accent2); }
+
+  .interactive-box { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:30px; margin:35px 0; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+  .interactive-box h3 { margin-top:0; color:var(--accent); font-size:18px; text-transform:uppercase; letter-spacing:1px; }
+  canvas { display:block; margin:15px auto; border-radius:6px; max-width:100%; }
+
+  .slider-row { display:flex; align-items:center; gap:15px; margin:15px 0; font-family:'Source Sans Pro',sans-serif; }
+  .slider-row label { font-weight:600; min-width:120px; font-size:15px; }
+  .slider-row input[type="range"] { flex:1; accent-color:var(--accent); height:6px; }
+  .slider-row .value { font-family:'Source Code Pro',monospace; background:var(--highlight); padding:4px 12px; border-radius:4px; font-weight:600; min-width:40px; text-align:center; }
+
+  .result-display { text-align:center; font-family:'Source Sans Pro',sans-serif; font-size:20px; margin:15px 0; padding:12px; background:linear-gradient(135deg,var(--highlight),#fff3e0); border-radius:6px; font-weight:600; }
+  .result-display span { color:var(--accent); font-size:28px; }
+
+  .math-table { width:100%; border-collapse:collapse; margin:20px 0; font-family:'Source Sans Pro',sans-serif; font-size:15px; }
+  .math-table th { background:#1a1a2e; color:#fff; padding:10px 14px; text-align:center; font-weight:600; }
+  .math-table td { padding:8px 14px; text-align:center; border-bottom:1px solid var(--border); }
+  .math-table tr:nth-child(even) { background:#f8f7f5; }
+  .math-table .highlight-cell { background:var(--highlight); font-weight:700; color:var(--accent); }
+  .math-table .zero-cell { background:#e8f5e9; font-weight:700; color:var(--accent3); }
+
+  .formula-box { background:#1a1a2e; color:#e0e0e0; padding:20px 25px; border-radius:8px; margin:25px 0; font-family:'Source Code Pro',monospace; font-size:16px; text-align:center; line-height:2; border-left:4px solid var(--accent); }
+  .formula-box .eq-highlight { color:#ff9800; font-weight:700; }
+
+  .pullquote { border-left:4px solid var(--accent); padding:15px 25px; margin:35px 0; font-style:italic; color:var(--muted); font-size:19px; line-height:1.7; background:linear-gradient(90deg,rgba(197,58,42,.04),transparent); }
+  .pullquote cite { display:block; margin-top:10px; font-size:14px; font-style:normal; color:var(--accent); font-family:'Source Sans Pro',sans-serif; }
+
+  .history-box { background:linear-gradient(135deg,#f3e5f5,#ede7f6); border:1px solid #ce93d8; border-radius:8px; padding:25px; margin:30px 0; }
+  .history-box h3 { color:#6a1b9a; margin-top:0; }
+
+  .btn { font-family:'Source Sans Pro',sans-serif; padding:8px 20px; border:none; border-radius:5px; cursor:pointer; font-size:14px; font-weight:600; transition:all .2s; }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#a83225; }
+  .btn-secondary { background:var(--accent2); color:#fff; }
+  .btn-secondary:hover { background:#1f5aa8; }
+  .btn-group { display:flex; gap:10px; justify-content:center; margin:15px 0; }
+
+  .footnote { font-size:14px; color:var(--muted); font-family:'Source Sans Pro',sans-serif; margin-top:8px; }
+  .section-number { font-family:'Source Sans Pro',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:5px; }
+  .divider { text-align:center; margin:50px 0; color:var(--border); font-size:24px; letter-spacing:12px; }
+
+  @media(max-width:600px){
+    .article-container{padding:30px 15px 60px;} .interactive-box{padding:20px 15px;}
+    .slider-row{flex-wrap:wrap;} .slider-row label{min-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Mathematics · Physics · History</div>
+  <h1>The Pizza Problem That Unlocks the Secret of Falling Objects</h1>
+  <div class="subtitle">How counting pizza slices, a 350-year-old trick with differences, and Galileo's ramps all tell the same beautiful story</div>
+</div>
+
+<div class="article-container">
+
+  <p class="drop-cap">You're at a party. Someone hands you a pizza and a knife. One straight cut and you've got 2 pieces. Another cut — if it crosses the first — gives you 4. A third, crossing both previous cuts, yields 7. Your friend bets you can't get more than 10 pieces from four cuts. Should you take the bet?</p>
+
+  <p>This humble question — <em>what is the maximum number of regions created by n straight cuts across a disk?</em> — is a gateway into one of the most elegant intersections of combinatorics, numerical analysis, and physics. Its answer connects a technique Newton refined in the 17th century to the very law Galileo discovered rolling balls down ramps in Padua. The thread that ties them together is surprisingly simple: <strong>the pattern hiding inside differences</strong>.</p>
+
+  <h2>I. The Pizza Problem</h2>
+  <div class="section-number">Combinatorics</div>
+
+  <p>Let's set up the rules precisely. Each cut is a full straight line across the pizza (not a chord ending early). To maximize pieces, every new line must cross all the previous ones, and no three lines may meet at a single point. Under these conditions, what is the maximum number of regions <em>R(n)</em> for <em>n</em> cuts?</p>
+
+  <p>Try it yourself below. Add cuts one at a time and watch the regions multiply. Every region is colored distinctly so you can count them.</p>
+
+  <div class="interactive-box">
+    <h3>Interactive: Pizza Slice Simulator</h3>
+    <canvas id="pizzaCanvas" width="520" height="520"></canvas>
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="cutMinus">− Remove Cut</button>
+      <div class="value" id="cutValue" style="font-size:18px;padding:8px 16px;">0 cuts</div>
+      <button class="btn btn-primary" id="cutPlus">+ Add Cut</button>
+    </div>
+    <div class="result-display">
+      Regions: <span id="regionCount">1</span>
+    </div>
+    <p class="footnote">Each new line is arranged so that every pair of lines intersects inside the circle, with no three lines meeting at a single point — guaranteeing the maximum number of regions. Every region is flood-filled with a distinct color so you can verify the count.</p>
+  </div>
+
+  <p>Count carefully and you'll build up this table:</p>
+
+  <table class="math-table">
+    <thead><tr><th>Cuts (n)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+    <tbody><tr><td><strong>Regions R(n)</strong></td><td>1</td><td>2</td><td>4</td><td>7</td><td>11</td><td>16</td><td>22</td></tr></tbody>
+  </table>
+
+  <p>The sequence 1, 2, 4, 7, 11, 16, 22 … doesn't jump out as an obvious formula. The differences between terms are 1, 2, 3, 4, 5, 6 — the natural numbers themselves. And the differences of <em>those</em> differences are all 1. One more step and we hit all zeros. This is the telltale signature of a <strong>quadratic</strong> — a polynomial of degree 2. But how do we extract the exact formula?</p>
+
+  <p>Enter a technique that Newton himself championed.</p>
+
+  <div class="divider">• • •</div>
+
+  <h2>II. Newton's Divided Differences</h2>
+  <div class="section-number">Numerical Analysis</div>
+
+  <div class="history-box" style="overflow:hidden;">
+    <h3>A Brief History of Divided Differences</h3>
+    <div style="float:right; margin:0 0 10px 20px; text-align:center; max-width:160px;">
+      <img src='https://i.postimg.cc/jqc0yfjV/rs-9408-1024x1024.png' border='0' alt='Isaac Newton' style="width:150px; border-radius:6px; border:2px solid #ce93d8; box-shadow:0 2px 8px rgba(0,0,0,0.15); pointer-events:none;">
+      <div style="font-size:11px; color:#6a1b9a; margin-top:5px; font-family:'Source Sans Pro',sans-serif; font-style:italic;">Isaac Newton (1643–1727)</div>
+    </div>
+    <p>The story of divided differences weaves through some of the greatest names in mathematics. <strong>Henry Briggs</strong>, who computed the first base-10 logarithm tables in the 1620s, was arguably the first to use finite differences systematically — he needed them to interpolate between computed values. <strong>Isaac Newton</strong>, in his <em>Principia</em> (1687) and unpublished manuscripts from the 1670s, formalized the forward difference interpolation formula that now bears his name. He used it not for abstract theory but for practical astronomy — predicting comet trajectories from sparse observational data.</p>
+    <p>What many don't know is that <strong>James Gregory</strong>, the Scottish mathematician, independently discovered the same interpolation formula around 1670, and the formula is sometimes called the Newton–Gregory formula.
+    <div style="float:left; margin:5px 20px 10px 0; text-align:center; max-width:160px;">
+      <img src='https://i.postimg.cc/9Fz8tkL0/gregory.jpg' border='0' alt='James Gregory' style="width:150px; border-radius:6px; border:2px solid #ce93d8; box-shadow:0 2px 8px rgba(0,0,0,0.15); pointer-events:none;">
+      <div style="font-size:11px; color:#6a1b9a; margin-top:5px; font-family:'Source Sans Pro',sans-serif; font-style:italic;">James Gregory (1638–1675)</div>
+    </div>
+    Later, <strong>Brook Taylor</strong> (of Taylor series fame) extended these ideas, recognizing finite differences as a discrete analogue of differential calculus — a connection that <strong>Leonhard Euler</strong> and <strong>George Boole</strong> would later develop into a full-blown "calculus of finite differences."</p>
+    <div style="float:right; margin:0 0 15px 20px; text-align:center; max-width:160px;">
+      <img src='https://i.postimg.cc/R0ZvnTcX/Boole.jpg' border='0' alt='George Boole' style="width:150px; border-radius:6px; border:2px solid #ce93d8; box-shadow:0 2px 8px rgba(0,0,0,0.15); pointer-events:none;">
+      <div style="font-size:11px; color:#6a1b9a; margin-top:5px; font-family:'Source Sans Pro',sans-serif; font-style:italic;">George Boole (1815–1864)</div>
+    </div>
+    <p>Boole, in his 1860 treatise <em>A Treatise on the Calculus of Finite Differences</em>, gave the subject its definitive systematic treatment — unifying the scattered techniques of his predecessors into a coherent theory. His work showed that finite differences obey algebraic laws strikingly parallel to those of ordinary calculus, an insight that continues to influence numerical analysis and combinatorics to this day.</p>
+    <div style="float:right; margin:5px 0 10px 20px; text-align:center; max-width:160px;">
+      <img src='https://i.postimg.cc/8zQRJX9M/babbage.png' border='0' alt='Charles Babbage' style="width:150px; border-radius:6px; border:2px solid #ce93d8; box-shadow:0 2px 8px rgba(0,0,0,0.15); pointer-events:none;">
+      <div style="font-size:11px; color:#6a1b9a; margin-top:5px; font-family:'Source Sans Pro',sans-serif; font-style:italic;">Charles Babbage (1791–1871)</div>
+    </div>
+    <p>The technique proved indispensable to human computers — people, not machines — who spent careers building navigation tables, actuarial tables, and ballistic charts. Charles Babbage designed his famous Difference Engine (1822) specifically to automate this method, making it arguably the philosophical ancestor of the modern computer.</p>
+  </div>
+
+  <p>The method of <em>divided differences</em> is one of the oldest and most powerful tools in numerical mathematics. The idea is deceptively simple: given a table of data, compute successive "differences" between consecutive values. If those differences eventually become constant (or zero), you've discovered the polynomial hiding in your data — and you can reconstruct it exactly.</p>
+
+  <h3>The Forward Difference Table</h3>
+
+  <p>For equally spaced data we use <em>forward differences</em>, denoted by the Greek letter delta (Δ). The first forward difference is Δf(n) = f(n+1) − f(n). The second difference is Δ²f(n) = Δf(n+1) − Δf(n), and so on. Let's apply it to our pizza data:</p>
+
+  <div class="interactive-box">
+    <h3>Forward Difference Table for Pizza Regions</h3>
+    <table class="math-table">
+      <thead><tr><th>n</th><th>R(n)</th><th>Δ¹</th><th>Δ²</th><th>Δ³</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td class="highlight-cell">1</td><td class="highlight-cell">1</td><td class="highlight-cell">1</td><td class="zero-cell">0</td></tr>
+        <tr><td>1</td><td>2</td><td>2</td><td>1</td><td class="zero-cell">0</td></tr>
+        <tr><td>2</td><td>4</td><td>3</td><td>1</td><td class="zero-cell">0</td></tr>
+        <tr><td>3</td><td>7</td><td>4</td><td>1</td><td></td></tr>
+        <tr><td>4</td><td>11</td><td>5</td><td></td><td></td></tr>
+        <tr><td>5</td><td>16</td><td></td><td></td><td></td></tr>
+        <tr><td>6</td><td>22</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <p class="footnote">The top entries of each column (highlighted in gold) — 1, 1, 1 — are the key values we need. Third differences vanish (green zeros), proving the data is exactly quadratic.</p>
+  </div>
+
+  <p>The third differences are all <strong>zero</strong>. This is the crucial signal. A fundamental theorem in finite calculus states: <em>if the k-th forward differences of a sequence are all zero, then the sequence is generated by a polynomial of degree at most k − 1.</em> Since Δ³ = 0, our pizza function R(n) is a polynomial of degree at most 2 — a quadratic.</p>
+
+  <h3>Newton's Forward Difference Formula</h3>
+
+  <p>Newton's interpolation formula lets us reconstruct the polynomial using the top row of the difference table — the highlighted values 1, 1, 1 from our forward difference table above. For equally spaced points starting at n = 0:</p>
+
+  <div class="formula-box">
+    R(n) = <span class="eq-highlight">Δ⁰</span> · C(n,0) + <span class="eq-highlight">Δ¹</span> · C(n,1) + <span class="eq-highlight">Δ²</span> · C(n,2)<br>
+    R(n) = <span class="eq-highlight">1</span> · 1 + <span class="eq-highlight">1</span> · n + <span class="eq-highlight">1</span> · n(n−1)/2<br><br>
+    <span style="color:#4fc3f7;font-size:18px;">R(n) = 1 + n + n(n−1)/2 = (n² + n + 2) / 2</span>
+  </div>
+
+  <p>Here C(n,k) denotes the binomial coefficient "n choose k." Plugging in n = 4 gives R(4) = (16 + 4 + 2)/2 = <strong>11</strong>. Your friend was wrong — and you should have taken the bet.</p>
+
+  <p>But this formula does more than answer a party trick. It demonstrates a profound principle: <strong>when differences stabilize, pattern becomes law</strong>. And this exact same principle was waiting, centuries earlier, in a physics laboratory in Italy.</p>
+
+  <div class="divider">• • •</div>
+
+  <h2>III. Galileo's Tower and the Secret of Falling</h2>
+  <div class="section-number">Physics</div>
+
+  <div style="float:right; margin:0 0 15px 20px; text-align:center; max-width:160px;">
+    <img src='https://i.postimg.cc/WzXBVByV/galileo-galilei-portrait.jpg' border='0' alt='Galileo Galilei' style="width:150px; border-radius:6px; border:2px solid var(--accent); box-shadow:0 2px 8px rgba(0,0,0,0.15); pointer-events:none;">
+    <div style="font-size:11px; color:var(--accent); margin-top:5px; font-family:'Source Sans Pro',sans-serif; font-style:italic;">Galileo Galilei (1564–1642)</div>
+  </div>
+
+  <p>In the 1600s, Galileo Galilei set out to understand the most basic motion in nature: the fall of a heavy body. Legend has it he dropped objects from the Leaning Tower of Pisa; what's certain is that he meticulously timed falling objects and discovered a stunning regularity.</p>
+
+  <p>What Galileo recorded was distance versus time. He found that the distances traveled in successive equal time intervals followed the pattern of odd numbers: 1, 3, 5, 7, 9 … And the cumulative distances — 1, 4, 9, 16, 25 — were perfect squares. Distance, he concluded, grows as the <em>square</em> of time.</p>
+
+  <p>But let's pretend we don't know this. Let's play Galileo ourselves and use the tool Newton would later formalize — divided differences — to extract the law of motion from raw data. Watch the ball drop and notice how the gaps between time markers grow wider — the unmistakable signature of acceleration.</p>
+
+  <div class="interactive-box">
+    <h3>Interactive: Galileo's Free-Fall Experiment</h3>
+    <canvas id="galileoCanvas" width="520" height="500"></canvas>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="galileoStart">▶ Drop Ball</button>
+      <button class="btn btn-secondary" id="galileoReset">↺ Reset</button>
+    </div>
+    <div id="galileoData" style="margin-top:15px;"></div>
+    <p class="footnote">Free fall under gravity: g = 32 ft/s². Distance markers appear at each half-second. The widening gaps between marks reveal that the ball is accelerating — covering more distance in each successive interval.</p>
+  </div>
+
+  <p>Here is the data for a ball dropped from rest under gravity (g = 32 ft/s²), with distance measured in feet at half-second intervals. Since d = ½gt², we get d = 16t²:</p>
+
+  <div class="interactive-box">
+    <h3>Forward Difference Table for Free-Fall Data</h3>
+    <table class="math-table">
+      <thead><tr><th>Time t (s)</th><th>Distance d (ft)</th><th>Δ¹</th><th>Δ²</th><th>Δ³</th></tr></thead>
+      <tbody>
+        <tr><td>0.0</td><td class="highlight-cell">0</td><td class="highlight-cell">4</td><td class="highlight-cell">4</td><td class="zero-cell">0</td></tr>
+        <tr><td>0.5</td><td>4</td><td>8</td><td>4</td><td class="zero-cell">0</td></tr>
+        <tr><td>1.0</td><td>16</td><td>12</td><td>4</td><td class="zero-cell">0</td></tr>
+        <tr><td>1.5</td><td>36</td><td>16</td><td>4</td><td></td></tr>
+        <tr><td>2.0</td><td>64</td><td>20</td><td></td><td></td></tr>
+        <tr><td>2.5</td><td>100</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Look at the structure. The first differences — 4, 8, 12, 16, 20 — increase steadily, telling us the ball is speeding up. The second differences are <strong>constant at 4</strong>. The third differences are <strong>zero</strong>. Once again, we have a quadratic.</p>
+
+  <p>Applying Newton's formula with step size h = 0.5, starting at t = 0:</p>
+
+  <div class="formula-box">
+    Let s = (t − t₀)/h = t / 0.5 = 2t<br><br>
+    d(t) = <span class="eq-highlight">0</span> · C(s,0) + <span class="eq-highlight">4</span> · C(s,1) + <span class="eq-highlight">4</span> · C(s,2)<br>
+    d = 4s + 4 · s(s−1)/2 = 4s + 2s² − 2s = 2s² + 2s<br><br>
+    Substituting s = 2t:<br>
+    d = 2(2t)² + 2(2t) = 8t² + 4t<br><br>
+    For a ball starting from rest the linear term vanishes, and comparing with d = ½gt²:<br>
+    <span style="color:#4fc3f7;font-size:18px;">d = 16t² &nbsp;⟹&nbsp; ½g = 16 &nbsp;⟹&nbsp; g = 32 ft/s²</span>
+  </div>
+
+  <p>The <strong>constant second difference</strong> is the fingerprint of constant acceleration. This is the bridge: in the pizza problem, constant second differences meant the slice-count was quadratic in the number of cuts. In Galileo's experiment, constant second differences mean distance is quadratic in time — which is precisely what it means for an object to have <strong>uniform acceleration</strong>.</p>
+
+  <div class="pullquote">
+    "The distances traversed during equal intervals of time by a body falling from rest stand to one another in the same ratio as the odd numbers beginning with unity."
+    <cite>— Galileo Galilei, <em>Discourses and Mathematical Demonstrations Relating to Two New Sciences</em> (1638)</cite>
+  </div>
+
+  <p>Galileo stated this as an empirical law. Newton's divided differences give us the <em>machinery</em> to derive it from raw data — no physics intuition required. The method is mechanical, almost algorithmic. Feed it a table of numbers, compute the differences, and the polynomial writes itself. This is why Babbage wanted to build a machine to do it.</p>
+
+  <div class="divider">• • •</div>
+
+  <h2>IV. What the Differences Reveal</h2>
+  <div class="section-number">Synthesis</div>
+
+  <p>Step back and consider what just happened. We took two problems from entirely different worlds — one a puzzle about slicing a pizza, the other a fundamental question about how objects fall — and cracked both open with the same simple act: <em>subtraction</em>.</p>
+
+  <p>Galileo stared at distances piling up — 1, 4, 9, 16, 25 — and subtracted his way to a constant. That constant was gravity. Newton aimed the same machinery at the heavens. Babbage was so captivated he spent his fortune building a machine to do nothing but subtract — the Difference Engine, philosophical ancestor of the computer you're reading this on.</p>
+
+  <p>From a dinner table puzzle to the laws of the cosmos — all it took was subtraction.</p>
+
+</div>
+
+<script>
+// =====================================================================
+//  PIZZA SIMULATOR  –  span flood-fill region counting
+// =====================================================================
+const pizzaCanvas = document.getElementById('pizzaCanvas');
+const pCtx = pizzaCanvas.getContext('2d');
+const cutValue = document.getElementById('cutValue');
+const regionCount = document.getElementById('regionCount');
+const cutPlus = document.getElementById('cutPlus');
+const cutMinus = document.getElementById('cutMinus');
+let currentCuts = 0;
+
+const PW = 520, PH = 520, CX = PW/2, CY = PH/2, CR = 220;
+
+const PAL = [
+  '#FFADAD','#FFD6A5','#FDFFB6','#CAFFBF','#9BF6FF','#A0C4FF','#BDB2FF','#FFC6FF',
+  '#FFE5D9','#D4E09B','#F6BD60','#84DCC6','#F4ACB7','#FFEEDD','#C1FBA4','#7BF1A8',
+  '#98D8C8','#F7DC6F','#BB8FCE','#F1948A','#85C1E9','#82E0AA','#F8C471','#D2B4DE',
+  '#AED6F1','#A3E4D7','#FAD7A0','#D5F5E3','#FADBD8','#E8DAEF','#D6EAF8','#D4EFDF',
+  '#FCF3CF','#F2D7D5','#D5D8DC','#EAECEE','#FEF9E7'
+];
+
+function makeLines(n) {
+  if (n === 0) return [];
+  const lines = [];
+  for (let i = 0; i < n; i++) {
+    const a1 = -Math.PI/2 + Math.PI * i / n;
+    const a2 =  Math.PI/2 + Math.PI * (i + 0.5) / n;
+    lines.push([
+      CX + CR * Math.cos(a1), CY + CR * Math.sin(a1),
+      CX + CR * Math.cos(a2), CY + CR * Math.sin(a2)
+    ]);
+  }
+  return lines;
+}
+
+function lineLineIntersect(l1, l2) {
+  const [ax,ay,bx,by] = l1, [cx,cy,dx,dy] = l2;
+  const d = (bx-ax)*(dy-cy)-(by-ay)*(dx-cx);
+  if (Math.abs(d) < 1e-12) return null;
+  const t = ((cx-ax)*(dy-cy)-(cy-ay)*(dx-cx)) / d;
+  return [ax+t*(bx-ax), ay+t*(by-ay)];
+}
+
+function insideCircle(x,y) {
+  return (x-CX)*(x-CX)+(y-CY)*(y-CY) < (CR-1)*(CR-1);
+}
+
+function drawPizza(n) {
+  const lines = makeLines(n);
+
+  const off = document.createElement('canvas');
+  off.width = PW; off.height = PH;
+  const o = off.getContext('2d');
+
+  o.fillStyle = '#000';
+  o.fillRect(0,0,PW,PH);
+  o.beginPath(); o.arc(CX,CY,CR-2,0,Math.PI*2); o.fillStyle='#fff'; o.fill();
+  o.strokeStyle = '#000'; o.lineWidth = 2;
+  lines.forEach(l => { o.beginPath(); o.moveTo(l[0],l[1]); o.lineTo(l[2],l[3]); o.stroke(); });
+  o.beginPath(); o.arc(CX,CY,CR-1,0,Math.PI*2);
+  o.strokeStyle='#000'; o.lineWidth=4; o.stroke();
+
+  const id = o.getImageData(0,0,PW,PH);
+  const px = id.data;
+  const W = PW, H = PH;
+  const mask = new Uint8Array(W*H);
+  for (let i = 0; i < W*H; i++) mask[i] = (px[i*4] > 128) ? 1 : 0;
+
+  function spanFill(sx, sy) {
+    if (!mask[sy*W+sx]) return 0;
+    let count = 0;
+    const stack = [[sx,sy]];
+    while (stack.length) {
+      let [x,y] = stack.pop();
+      if (y<0||y>=H||!mask[y*W+x]) continue;
+      let lx = x;
+      while (lx>0 && mask[y*W+lx-1]) lx--;
+      let rx = x;
+      while (rx<W-1 && mask[y*W+rx+1]) rx++;
+      for (let i=lx;i<=rx;i++) { mask[y*W+i]=0; count++; }
+      for (let dy of [-1,1]) {
+        let ny = y+dy; if (ny<0||ny>=H) continue;
+        let ins = false;
+        for (let i=lx;i<=rx;i++) {
+          if (mask[ny*W+i]) { if (!ins) { stack.push([i,ny]); ins=true; } }
+          else ins = false;
+        }
+      }
+    }
+    return count;
+  }
+
+  // First pass: count regions
+  const regions = [];
+  const yMin = Math.max(0, Math.floor(CY-CR+4));
+  const yMax = Math.min(H-1, Math.ceil(CY+CR-4));
+  const xMin = Math.max(0, Math.floor(CX-CR+4));
+  const xMax = Math.min(W-1, Math.ceil(CX+CR-4));
+  for (let y=yMin; y<=yMax; y++) {
+    for (let x=xMin; x<=xMax; x++) {
+      if (mask[y*W+x]) {
+        const cnt = spanFill(x,y);
+        if (cnt > 8) regions.push({sx:x, sy:y, count:cnt});
+      }
+    }
+  }
+
+  // Second pass: colour regions
+  const id2 = o.getImageData(0,0,PW,PH);
+  const px2 = id2.data;
+  const mask2 = new Uint8Array(W*H);
+  for (let i=0;i<W*H;i++) mask2[i] = (px2[i*4]>128)?1:0;
+
+  function spanFillColor(sx,sy,r,g,b) {
+    if (!mask2[sy*W+sx]) return;
+    const stack=[[sx,sy]];
+    while(stack.length){
+      let [x,y]=stack.pop();
+      if(y<0||y>=H||!mask2[y*W+x]) continue;
+      let lx=x; while(lx>0&&mask2[y*W+lx-1]) lx--;
+      let rx=x; while(rx<W-1&&mask2[y*W+rx+1]) rx++;
+      for(let i=lx;i<=rx;i++){
+        mask2[y*W+i]=0;
+        const j=(y*W+i)*4;
+        px2[j]=r; px2[j+1]=g; px2[j+2]=b;
+      }
+      for(let dy of [-1,1]){
+        let ny=y+dy; if(ny<0||ny>=H) continue;
+        let ins=false;
+        for(let i=lx;i<=rx;i++){
+          if(mask2[ny*W+i]){if(!ins){stack.push([i,ny]);ins=true;}} else ins=false;
+        }
+      }
+    }
+  }
+
+  let regionIdx = 0;
+  for (let y=yMin;y<=yMax;y++){
+    for(let x=xMin;x<=xMax;x++){
+      if(mask2[y*W+x]){
+        const col = PAL[regionIdx % PAL.length];
+        const cv = parseInt(col.slice(1),16);
+        spanFillColor(x,y,(cv>>16)&255,(cv>>8)&255,cv&255);
+        regionIdx++;
+      }
+    }
+  }
+
+  o.putImageData(id2,0,0);
+
+  pCtx.clearRect(0,0,PW,PH);
+  pCtx.save();
+  pCtx.beginPath(); pCtx.arc(CX,CY,CR,0,Math.PI*2); pCtx.closePath(); pCtx.clip();
+  pCtx.drawImage(off,0,0);
+
+  const LC=['#c53a2a','#2a6bc5','#1a8a5c','#e67e22','#8e44ad','#16a085','#d35400','#2c3e50'];
+  lines.forEach((l,i)=>{
+    pCtx.beginPath(); pCtx.moveTo(l[0],l[1]); pCtx.lineTo(l[2],l[3]);
+    pCtx.strokeStyle=LC[i%LC.length]; pCtx.lineWidth=2.5; pCtx.stroke();
+  });
+
+  for(let i=0;i<lines.length;i++) for(let j=i+1;j<lines.length;j++){
+    const pt=lineLineIntersect(lines[i],lines[j]);
+    if(pt && insideCircle(pt[0],pt[1])){
+      pCtx.beginPath(); pCtx.arc(pt[0],pt[1],4,0,Math.PI*2);
+      pCtx.fillStyle='#1a1a2e'; pCtx.fill();
+      pCtx.strokeStyle='#fff'; pCtx.lineWidth=1.5; pCtx.stroke();
+    }
+  }
+  pCtx.restore();
+
+  pCtx.beginPath(); pCtx.arc(CX,CY,CR,0,Math.PI*2);
+  pCtx.strokeStyle='#6B4226'; pCtx.lineWidth=5; pCtx.stroke();
+  pCtx.strokeStyle='#a67c1a'; pCtx.lineWidth=2; pCtx.stroke();
+
+  regionCount.textContent = regions.length || 1;
+}
+
+cutPlus.addEventListener('click',()=>{
+  if (currentCuts < 4) {
+    currentCuts++;
+    cutValue.textContent = currentCuts + (currentCuts === 1 ? ' cut' : ' cuts');
+    drawPizza(currentCuts);
+  }
+});
+cutMinus.addEventListener('click',()=>{
+  if (currentCuts > 0) {
+    currentCuts--;
+    cutValue.textContent = currentCuts + (currentCuts === 1 ? ' cut' : ' cuts');
+    drawPizza(currentCuts);
+  }
+});
+drawPizza(0);
+
+
+// =====================================================================
+//  GALILEO FREE-FALL SIMULATION  –  g = 32 ft/s²
+// =====================================================================
+const gCanvas = document.getElementById('galileoCanvas');
+const gCtx = gCanvas.getContext('2d');
+const startBtn = document.getElementById('galileoStart');
+const resetBtn = document.getElementById('galileoReset');
+const dataDiv = document.getElementById('galileoData');
+const GW = gCanvas.width, GH = gCanvas.height;
+
+// Physics: d = 16t² ft. Animation runs for ~2.5s.
+// Total fall distance on screen: map 100 ft → ~400 px
+const SCALE = 4; // px per ft
+const TOWER_X = 160;
+const TOWER_TOP = 60;
+const TOWER_W = 70;
+const GROUND_Y = GH - 50;
+const BALL_R = 14;
+const G_ACCEL = 32; // ft/s²
+const MAX_T = 2.5;
+
+const G = {
+  running: false, t: 0, last: 0,
+  markers: [], nextM: 0.5, mInt: 0.5
+};
+
+function distFt(t) { return 16 * t * t; } // d = ½(32)t²
+function distPx(t) { return distFt(t) * SCALE; }
+
+function drawTower() {
+  gCtx.clearRect(0, 0, GW, GH);
+
+  // Sky gradient
+  const sky = gCtx.createLinearGradient(0, 0, 0, GH);
+  sky.addColorStop(0, '#5b9bd5');
+  sky.addColorStop(0.7, '#a8d0f0');
+  sky.addColorStop(0.85, '#c8e6c9');
+  sky.addColorStop(1, '#6d8f3e');
+  gCtx.fillStyle = sky;
+  gCtx.fillRect(0, 0, GW, GH);
+
+  // Ground
+  gCtx.fillStyle = '#5a7a2a';
+  gCtx.fillRect(0, GROUND_Y, GW, GH - GROUND_Y);
+  gCtx.fillStyle = '#4a6a22';
+  gCtx.fillRect(0, GROUND_Y, GW, 3);
+
+  // Tower body
+  const tLeft = TOWER_X - TOWER_W / 2;
+  const tRight = TOWER_X + TOWER_W / 2;
+  const tBot = GROUND_Y;
+
+  // Tower main structure
+  const tGrad = gCtx.createLinearGradient(tLeft, 0, tRight, 0);
+  tGrad.addColorStop(0, '#d4c4a0');
+  tGrad.addColorStop(0.3, '#f0e6cc');
+  tGrad.addColorStop(0.7, '#e8dbb8');
+  tGrad.addColorStop(1, '#c4b48a');
+  gCtx.fillStyle = tGrad;
+  gCtx.fillRect(tLeft, TOWER_TOP - 20, TOWER_W, tBot - TOWER_TOP + 20);
+
+  // Tower top platform
+  gCtx.fillStyle = '#b8a880';
+  gCtx.fillRect(tLeft - 12, TOWER_TOP - 25, TOWER_W + 24, 12);
+
+  // Crenellations
+  for (let i = 0; i < 5; i++) {
+    const cx = tLeft - 10 + i * ((TOWER_W + 20) / 5);
+    gCtx.fillStyle = '#b8a880';
+    gCtx.fillRect(cx, TOWER_TOP - 38, 12, 16);
+  }
+
+  // Windows
+  gCtx.fillStyle = '#3a3520';
+  for (let row = 0; row < 6; row++) {
+    const wy = TOWER_TOP + 20 + row * 60;
+    if (wy > tBot - 30) break;
+    gCtx.beginPath();
+    gCtx.arc(TOWER_X, wy, 8, Math.PI, 0);
+    gCtx.fillRect(TOWER_X - 8, wy, 16, 14);
+    gCtx.fill();
+  }
+
+  // Stone lines
+  gCtx.strokeStyle = 'rgba(0,0,0,0.08)';
+  gCtx.lineWidth = 1;
+  for (let y = TOWER_TOP; y < tBot; y += 18) {
+    gCtx.beginPath();
+    gCtx.moveTo(tLeft, y);
+    gCtx.lineTo(tRight, y);
+    gCtx.stroke();
+  }
+
+  // Measurement ruler on right side
+  const rulerX = tRight + 30;
+  gCtx.strokeStyle = '#555';
+  gCtx.lineWidth = 1.5;
+  gCtx.beginPath();
+  gCtx.moveTo(rulerX, TOWER_TOP);
+  gCtx.lineTo(rulerX, GROUND_Y);
+  gCtx.stroke();
+
+  // Ruler ticks every 20 ft
+  gCtx.fillStyle = '#555';
+  gCtx.font = '11px Source Sans Pro, sans-serif';
+  gCtx.textAlign = 'left';
+  for (let ft = 0; ft <= 100; ft += 20) {
+    const y = TOWER_TOP + ft * SCALE;
+    if (y > GROUND_Y) break;
+    gCtx.beginPath();
+    gCtx.moveTo(rulerX - 4, y);
+    gCtx.lineTo(rulerX + 4, y);
+    gCtx.stroke();
+    gCtx.fillText(ft + ' ft', rulerX + 8, y + 4);
+  }
+
+  // Time markers on left side
+  const markerX = tLeft - 20;
+  G.markers.forEach(m => {
+    const y = TOWER_TOP + distPx(m.t);
+    if (y > GROUND_Y) return;
+
+    gCtx.strokeStyle = '#c53a2a';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(markerX - 15, y);
+    gCtx.lineTo(markerX + 5, y);
+    gCtx.stroke();
+
+    // Dashed line to ruler
+    gCtx.setLineDash([3, 3]);
+    gCtx.strokeStyle = 'rgba(197,58,42,0.3)';
+    gCtx.lineWidth = 1;
+    gCtx.beginPath();
+    gCtx.moveTo(markerX + 5, y);
+    gCtx.lineTo(rulerX - 6, y);
+    gCtx.stroke();
+    gCtx.setLineDash([]);
+
+    gCtx.fillStyle = '#c53a2a';
+    gCtx.font = 'bold 12px Source Sans Pro, sans-serif';
+    gCtx.textAlign = 'right';
+    gCtx.fillText('t=' + m.t.toFixed(1) + 's', markerX - 18, y + 4);
+
+    gCtx.textAlign = 'left';
+    gCtx.fillText(distFt(m.t).toFixed(0) + ' ft', rulerX + 8, y + 15);
+  });
+
+  // Ball
+  const ballD = Math.min(distPx(G.t), GROUND_Y - TOWER_TOP - BALL_R);
+  const ballY = TOWER_TOP + ballD;
+  const ballX = TOWER_X + TOWER_W / 2 + 18;
+
+  // Ball shadow
+  gCtx.beginPath();
+  gCtx.ellipse(ballX + 2, GROUND_Y - 2, BALL_R * 0.6, 4, 0, 0, Math.PI * 2);
+  gCtx.fillStyle = 'rgba(0,0,0,0.15)';
+  gCtx.fill();
+
+  // Ball
+  const bg = gCtx.createRadialGradient(ballX - 3, ballY - 4, 2, ballX, ballY, BALL_R);
+  bg.addColorStop(0, '#e0c080');
+  bg.addColorStop(0.5, '#cd853f');
+  bg.addColorStop(1, '#8B6914');
+  gCtx.beginPath();
+  gCtx.arc(ballX, ballY, BALL_R, 0, Math.PI * 2);
+  gCtx.fillStyle = bg;
+  gCtx.fill();
+  gCtx.strokeStyle = '#6B4226';
+  gCtx.lineWidth = 1.5;
+  gCtx.stroke();
+
+  // Timer overlay
+  gCtx.fillStyle = 'rgba(26,26,46,0.85)';
+  const tw = 130, th = 36, tx = GW - tw - 15, ty = 15;
+  gCtx.beginPath();
+  gCtx.roundRect(tx, ty, tw, th, 6);
+  gCtx.fill();
+  gCtx.fillStyle = '#fff';
+  gCtx.font = 'bold 16px Source Code Pro, monospace';
+  gCtx.textAlign = 'right';
+  gCtx.fillText('t = ' + G.t.toFixed(2) + ' s', GW - 25, 39);
+
+  // Label
+  gCtx.fillStyle = 'rgba(255,255,255,0.8)';
+  gCtx.font = 'italic 13px Merriweather, serif';
+  gCtx.textAlign = 'center';
+  gCtx.fillText('g = 32 ft/s²', TOWER_X, GH - 15);
+}
+
+function stepG(ts) {
+  if (!G.running) return;
+  if (!G.last) G.last = ts;
+  const dt = Math.min((ts - G.last) / 1000, 0.05);
+  G.last = ts;
+  G.t += dt;
+
+  while (G.t >= G.nextM && G.nextM <= MAX_T) {
+    if (distPx(G.nextM) < GROUND_Y - TOWER_TOP - BALL_R) {
+      G.markers.push({ t: G.nextM });
+    }
+    G.nextM += G.mInt;
+  }
+
+  drawTower();
+
+  if (distPx(G.t) < GROUND_Y - TOWER_TOP - BALL_R) {
+    requestAnimationFrame(stepG);
+  } else {
+    G.running = false;
+    showData();
+  }
+}
+
+function showData() {
+  const times = [0, 0.5, 1.0, 1.5, 2.0, 2.5];
+  const dists = times.map(t => Math.round(16 * t * t));
+  const d1 = [], d2 = [];
+  for (let i = 0; i < dists.length - 1; i++) d1.push(dists[i + 1] - dists[i]);
+  for (let i = 0; i < d1.length - 1; i++) d2.push(d1[i + 1] - d1[i]);
+
+  let h = '<table class="math-table"><thead><tr><th>Time (s)</th><th>Distance (ft)</th><th>Δ¹</th><th>Δ²</th></tr></thead><tbody>';
+  for (let i = 0; i < dists.length; i++) {
+    const v1 = i < d1.length ? d1[i] : '';
+    const v2 = i < d2.length ? d2[i] : '';
+    const c2 = v2 !== '' ? ' class="zero-cell"' : '';
+    h += `<tr><td>${times[i].toFixed(1)}</td><td>${dists[i]}</td><td>${v1}</td><td${c2}>${v2}</td></tr>`;
+  }
+  h += '</tbody></table>';
+  h += '<p class="footnote">Constant Δ² = 4 confirms uniform acceleration. From d = ½gt²: ½g = 16, so g = 32 ft/s².</p>';
+  dataDiv.innerHTML = h;
+}
+
+startBtn.addEventListener('click', () => {
+  if (G.running) return;
+  G.running = true;
+  G.last = 0;
+  requestAnimationFrame(stepG);
+});
+
+resetBtn.addEventListener('click', () => {
+  G.running = false;
+  G.t = 0;
+  G.last = 0;
+  G.markers = [];
+  G.nextM = 0.5;
+  dataDiv.innerHTML = '';
+  drawTower();
+});
+
+drawTower();
+</script>
+
+</body>
+</html>
