@@ -231,28 +231,23 @@
     </table>
   </div>
 
-  <p>Look at the structure. The first differences — 4, 8, 12, 16, 20 — increase steadily, telling us the ball is speeding up. The second differences are <strong>constant at 4</strong>. The third differences are <strong>zero</strong>. Once again, we have a quadratic.</p>
+  <p>Look at the structure. The first differences — 4, 8, 12, 16, 20 — grow steadily. The second differences are <strong>constant at 4</strong>. The third differences are <strong>zero</strong>. The same signal we found in the pizza problem: a quadratic hiding in the data.</p>
 
-  <p>Applying Newton's formula with step size h = 0.5, starting at t = 0:</p>
+  <p>But there's a beautiful pattern in the raw distances too. The values 0, 4, 16, 36, 64, 100, divided by 4, give 0, 1, 4, 9, 16, 25 — <strong>perfect squares</strong>. And the ratios between successive intervals follow 1 : 3 : 5 : 7 : 9 — the odd numbers that Galileo himself marveled at. Distance grows as the square of time, and the constant second difference is the numerical fingerprint of uniform acceleration.</p>
 
   <div class="formula-box">
-    Let s = (t − t₀)/h = t / 0.5 = 2t<br><br>
-    d(t) = <span class="eq-highlight">0</span> · C(s,0) + <span class="eq-highlight">4</span> · C(s,1) + <span class="eq-highlight">4</span> · C(s,2)<br>
-    d = 4s + 4 · s(s−1)/2 = 4s + 2s² − 2s = 2s² + 2s<br><br>
-    Substituting s = 2t:<br>
-    d = 2(2t)² + 2(2t) = 8t² + 4t<br><br>
-    For a ball starting from rest the linear term vanishes, and comparing with d = ½gt²:<br>
-    <span style="color:#4fc3f7;font-size:18px;">d = 16t² &nbsp;⟹&nbsp; ½g = 16 &nbsp;⟹&nbsp; g = 32 ft/s²</span>
+    Cumulative distances: &nbsp; 0, &nbsp; 4, &nbsp; 16, &nbsp; 36, &nbsp; 64, &nbsp; 100<br>
+    Divide by 4: &nbsp; 0, &nbsp; 1, &nbsp; 4, &nbsp; 9, &nbsp; 16, &nbsp; 25 = <span class="eq-highlight">perfect squares</span><br><br>
+    Ratios of successive intervals: &nbsp; 1 : 3 : 5 : 7 : 9 = <span class="eq-highlight">odd numbers</span><br><br>
+    <span style="color:#4fc3f7;font-size:18px;">Constant Δ² &nbsp;⟹&nbsp; constant acceleration &nbsp;⟹&nbsp; d ∝ t²</span>
   </div>
-
-  <p>The <strong>constant second difference</strong> is the fingerprint of constant acceleration. This is the bridge: in the pizza problem, constant second differences meant the slice-count was quadratic in the number of cuts. In Galileo's experiment, constant second differences mean distance is quadratic in time — which is precisely what it means for an object to have <strong>uniform acceleration</strong>.</p>
 
   <div class="pullquote">
     "The distances traversed during equal intervals of time by a body falling from rest stand to one another in the same ratio as the odd numbers beginning with unity."
     <cite>— Galileo Galilei, <em>Discourses and Mathematical Demonstrations Relating to Two New Sciences</em> (1638)</cite>
   </div>
 
-  <p>Galileo stated this as an empirical law. Newton's divided differences give us the <em>machinery</em> to derive it from raw data — no physics intuition required. The method is mechanical, almost algorithmic. Feed it a table of numbers, compute the differences, and the polynomial writes itself. This is why Babbage wanted to build a machine to do it.</p>
+  <p>Galileo stated this as an empirical law. Newton's divided differences give us the <em>machinery</em> to derive it from raw data — no physics intuition required. Feed a table of numbers, compute the differences, and the polynomial writes itself.</p>
 
   <div class="divider">• • •</div>
 
