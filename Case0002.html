@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Number That Knows When to Say "I Do"</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,300;1,8..60,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#FAF7F2;
+  --text:#1C1917;
+  --text-secondary:#57534E;
+  --accent:#B91C1C;
+  --accent-warm:#DC7424;
+  --blue:#1D4ED8;
+  --blue-light:#DBEAFE;
+  --green:#047857;
+  --green-light:#D1FAE5;
+  --amber:#B45309;
+  --amber-light:#FEF3C7;
+  --purple:#6D28D9;
+  --purple-light:#EDE9FE;
+  --card:#FFFFFF;
+  --border:#E7E5E4;
+  --serif:'Source Serif 4','Georgia',serif;
+  --display:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--text);
+  font-size:19px;
+  line-height:1.82;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:60px 24px;
+  overflow:hidden;
+  background:#0C0A09;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 45%,rgba(185,28,28,.12) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 50% at 30% 60%,rgba(29,78,216,.08) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 75% 35%,rgba(220,116,36,.06) 0%,transparent 60%);
+}
+.hero canvas{
+  position:absolute;inset:0;width:100%;height:100%;opacity:.35;
+}
+.hero-content{position:relative;z-index:2;max-width:780px;}
+.hero-kicker{
+  font-family:var(--sans);
+  text-transform:uppercase;
+  letter-spacing:4px;
+  font-size:12px;
+  font-weight:600;
+  color:rgba(255,255,255,.4);
+  margin-bottom:28px;
+}
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(36px,6.5vw,68px);
+  font-weight:900;
+  line-height:1.08;
+  color:#FAFAF9;
+  margin-bottom:24px;
+  letter-spacing:-.02em;
+}
+.hero h1 em{
+  color:#F87171;
+  font-style:italic;
+}
+.hero-deck{
+  font-family:var(--serif);
+  font-size:clamp(16px,2.2vw,21px);
+  font-weight:300;
+  font-style:italic;
+  color:rgba(255,255,255,.55);
+  max-width:560px;
+  margin:0 auto 40px;
+  line-height:1.6;
+}
+.hero-byline{
+  font-family:var(--sans);
+  font-size:13px;
+  color:rgba(255,255,255,.3);
+  letter-spacing:1px;
+}
+.scroll-cue{
+  position:absolute;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:var(--sans);
+  font-size:12px;
+  color:rgba(255,255,255,.25);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  animation:pulse-down 2s ease-in-out infinite;
+}
+.scroll-cue::after{
+  content:'↓';display:block;text-align:center;margin-top:4px;font-size:18px;
+}
+@keyframes pulse-down{
+  0%,100%{opacity:.25;transform:translateX(-50%) translateY(0);}
+  50%{opacity:.5;transform:translateX(-50%) translateY(6px);}
+}
+
+/* ─── ARTICLE BODY ─── */
+.article{max-width:700px;margin:0 auto;padding:64px 24px 100px;}
+p{margin-bottom:24px;}
+
+.drop-cap::first-letter{
+  float:left;
+  font-family:var(--display);
+  font-size:78px;
+  line-height:62px;
+  padding:4px 12px 0 0;
+  color:var(--accent);
+  font-weight:900;
+}
+
+h2{
+  font-family:var(--display);
+  font-size:32px;
+  font-weight:700;
+  margin:64px 0 8px;
+  line-height:1.2;
+  color:var(--text);
+}
+.section-label{
+  font-family:var(--sans);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:20px;
+}
+
+h3{
+  font-family:var(--sans);
+  font-size:20px;
+  font-weight:700;
+  margin:36px 0 12px;
+  color:var(--blue);
+}
+
+/* ─── SPECIAL BLOCKS ─── */
+.pullquote{
+  border-left:3px solid var(--accent);
+  padding:20px 28px;
+  margin:40px 0;
+  font-style:italic;
+  font-size:21px;
+  line-height:1.65;
+  color:var(--text-secondary);
+  background:linear-gradient(90deg,rgba(185,28,28,.03),transparent);
+}
+.pullquote cite{
+  display:block;margin-top:12px;
+  font-size:13px;font-style:normal;
+  font-family:var(--sans);color:var(--accent);font-weight:600;
+}
+
+.aside-box{
+  background:linear-gradient(135deg,#FFF7ED,#FFFBEB);
+  border:1px solid #FDE68A;
+  border-radius:10px;
+  padding:28px;
+  margin:36px 0;
+}
+.aside-box h3{color:var(--amber);margin-top:0;font-size:17px;letter-spacing:.5px;text-transform:uppercase;}
+.aside-box p:last-child{margin-bottom:0;}
+
+.history-box{
+  background:linear-gradient(135deg,#F5F3FF,#EDE9FE);
+  border:1px solid #C4B5FD;
+  border-radius:10px;
+  padding:28px;
+  margin:36px 0;
+}
+.history-box h3{color:var(--purple);margin-top:0;}
+.history-box p:last-child{margin-bottom:0;}
+
+.formula{
+  background:#0C0A09;
+  color:#E7E5E4;
+  padding:24px 28px;
+  border-radius:10px;
+  margin:28px 0;
+  font-family:var(--mono);
+  font-size:15px;
+  text-align:center;
+  line-height:2.2;
+  border-left:4px solid var(--accent);
+}
+.formula .hl{color:#F59E0B;font-weight:700;}
+
+.divider{
+  text-align:center;
+  margin:56px 0;
+  color:var(--border);
+  font-size:20px;
+  letter-spacing:14px;
+}
+
+/* ─── INTERACTIVE BOXES ─── */
+.interactive{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:32px;
+  margin:40px 0;
+  box-shadow:0 4px 24px rgba(0,0,0,.04);
+}
+.interactive-title{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--accent);
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.interactive-title::before{
+  content:'';display:inline-block;width:8px;height:8px;
+  background:var(--accent);border-radius:50%;
+  animation:blink-dot 2s ease-in-out infinite;
+}
+@keyframes blink-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.slider-group{
+  display:flex;align-items:center;gap:14px;
+  margin:14px 0;
+  font-family:var(--sans);font-size:14px;
+}
+.slider-group label{font-weight:600;min-width:130px;color:var(--text-secondary);}
+.slider-group input[type=range]{flex:1;accent-color:var(--accent);height:5px;}
+.slider-group .val{
+  font-family:var(--mono);
+  background:var(--amber-light);
+  padding:3px 12px;
+  border-radius:6px;
+  font-weight:600;
+  font-size:13px;
+  min-width:44px;
+  text-align:center;
+}
+
+.btn{
+  font-family:var(--sans);
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:600;
+  transition:all .15s;
+}
+.btn-red{background:var(--accent);color:#fff;}
+.btn-red:hover{background:#991B1B;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:#1E3A8A;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{background:#065F46;}
+.btn-outline{background:transparent;color:var(--text-secondary);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--text);color:var(--text);}
+.btn-group{display:flex;gap:10px;justify-content:center;margin:16px 0;flex-wrap:wrap;}
+
+.result-box{
+  text-align:center;
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:600;
+  margin:16px 0;
+  padding:14px;
+  border-radius:8px;
+  background:linear-gradient(135deg,var(--amber-light),#FFF7ED);
+}
+.footnote{
+  font-family:var(--sans);
+  font-size:13px;
+  color:var(--text-secondary);
+  margin-top:12px;
+  line-height:1.6;
+}
+
+canvas{display:block;margin:12px auto;border-radius:8px;max-width:100%;}
+
+/* ─── THE GAME ─── */
+.game-controls{
+  display:flex;gap:20px;flex-wrap:wrap;align-items:center;
+  font-family:var(--sans);font-size:14px;
+  margin-bottom:18px;
+}
+.game-controls > div{display:flex;align-items:center;gap:8px;}
+.game-controls label{font-weight:600;color:var(--text-secondary);}
+.game-controls .chip{
+  font-family:var(--mono);
+  background:var(--amber-light);
+  padding:3px 10px;
+  border-radius:6px;
+  font-weight:700;
+  font-size:13px;
+}
+
+.progress-track{margin-bottom:20px;}
+.progress-meta{
+  display:flex;justify-content:space-between;
+  font-family:var(--sans);font-size:12px;color:var(--text-secondary);
+  margin-bottom:5px;
+}
+.progress-meta .phase{font-weight:700;}
+.progress-bar-bg{background:#E7E5E4;border-radius:99px;height:8px;overflow:hidden;position:relative;}
+.progress-fill{height:100%;transition:width .3s;border-radius:99px;}
+
+.candidate-card{
+  background:#fff;
+  border:2px solid var(--border);
+  border-radius:14px;
+  padding:28px 32px;
+  max-width:360px;
+  margin:0 auto;
+  text-align:center;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  transition:border-color .3s;
+}
+.candidate-card .avatar{font-size:56px;margin-bottom:10px;line-height:1;}
+.candidate-card .name{font-family:var(--sans);font-size:20px;font-weight:700;margin-bottom:6px;}
+.candidate-card .comparison{font-family:var(--sans);font-size:14px;min-height:22px;margin-bottom:12px;}
+.candidate-card .badge{
+  display:inline-block;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:99px;
+  letter-spacing:.5px;margin-bottom:14px;
+}
+
+.history-row{display:flex;flex-wrap:wrap;gap:4px;min-height:40px;margin-top:16px;}
+.history-dot{
+  display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  font-family:var(--sans);font-size:9px;
+}
+.history-dot .circle{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;border:1.5px solid;
+}
+
+/* ─── TABLE ─── */
+.data-table{
+  width:100%;border-collapse:collapse;margin:20px 0;
+  font-family:var(--sans);font-size:14px;
+}
+.data-table th{
+  background:#0C0A09;color:#fff;
+  padding:10px 14px;text-align:center;font-weight:600;font-size:13px;
+}
+.data-table td{padding:8px 14px;text-align:center;border-bottom:1px solid var(--border);}
+.data-table tr:nth-child(even){background:#FAFAF9;}
+.data-table .hl-cell{background:var(--amber-light);font-weight:700;color:var(--amber);}
+.data-table .blue-cell{background:var(--blue-light);font-weight:700;color:var(--blue);}
+.data-table .green-cell{background:var(--green-light);font-weight:700;color:var(--green);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:640px){
+  .article{padding:40px 18px 80px;}
+  .interactive{padding:22px 16px;}
+  .slider-group{flex-wrap:wrap;}
+  .slider-group label{min-width:100%;}
+  .game-controls{gap:12px;}
+  .candidate-card{padding:22px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═════════════ HERO ═════════════ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-kicker">Optimal Stopping · Probability · Love</div>
+    <h1>The Number That Knows<br>When to Say <em>"I Do"</em></h1>
+    <div class="hero-deck">Inside an 80-year-old puzzle about hiring secretaries lies a formula for the most human decision of all — and it hinges on a constant that shows up everywhere in nature.</div>
+
+  </div>
+  <div class="scroll-cue">Scroll to begin</div>
+</div>
+
+<!-- ═════════════ ARTICLE ═════════════ -->
+<div class="article">
+
+<!-- ────── OPENING HOOK ────── -->
+<p class="drop-cap">Johannes Kepler had a problem. It was 1611, his first wife had died of cholera, and the great astronomer — the man who had decoded the orbits of planets — found himself staring at a far more bewildering mystery: how to choose a second wife.</p>
+
+<p>He did what any self-respecting scientist would do. He made a list. Eleven women. He visited them, one by one, over the course of two painful years. The first candidate was lovely but had bad breath. The second seemed interested only in his modest fortune. Number three was engaged to someone else. By the fifth candidate Kepler felt a spark, but she seemed too young, so he kept going. Numbers six through ten all disappointed. Desperate, he circled back to candidate five — who, mercifully, was still available — and married her. It was, by his own reckoning, the happiest decision of his life.</p>
+
+<p>Four centuries later, mathematicians would prove that Kepler's instinct was strikingly close to optimal. Not emotionally optimal, not spiritually optimal, but <em>mathematically</em> optimal — in a sense so precise that it involves a number etched into the fabric of the universe itself.</p>
+
+<p>That number is <em>e</em>. Or, more specifically, 1/<em>e</em>. Which works out to about 0.368. Which means roughly 37%.</p>
+
+<p>And it answers the question that every person who has ever dated, swiped, wondered, or agonized has asked themselves at two in the morning: <em>How do you know when to stop looking?</em></p>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 1: THE SETUP ────── -->
+<h2>The Cruelest Game Show in the World</h2>
+<div class="section-label">The Problem</div>
+
+<p>Here's the setup, stripped of all sentimentality. Imagine you'll meet exactly <em>N</em> potential partners over the course of your romantic life. They show up one at a time, in random order. After each date, you get a clear sense of how this person compares to everyone you've already met — but you have no way of knowing what's still coming. And crucially, once you pass on someone, they're gone. No callbacks. No "let me think about it." You say yes or you say goodbye forever.</p>
+
+<p>If this sounds cruel, that's because it is. But it's also recognisably <em>life</em>. We don't get to line up all our options side by side like paint swatches. We meet people in sequence, and we're perpetually guessing whether the person in front of us is the one who got away or just the one who showed up early.</p>
+
+<p>Mathematicians call this the <strong>Secretary Problem</strong> — originally framed as a manager interviewing applicants for a single position, forced to hire or reject each one on the spot. It goes by other names too: the Marriage Problem, the Sultan's Dowry Problem, or, in the driest corners of the literature, simply <em>optimal stopping</em>. The framing changes but the mathematics does not. Whether you're hiring a secretary, choosing a spouse, or deciding when to sell a stock, the underlying question is identical: when you see options one at a time, with no going back, how do you know when to stop?</p>
+
+<p>The question, then, is tactical: is there a strategy — any strategy at all — that gives you the best possible chance of ending up with the single best person in the whole pool?</p>
+
+<p>Remarkably, there is. And before I show you the math, I'd like you to feel it in your bones. Try the game below. You'll meet candidates one by one, see how they compare, and have to decide — right then, no mulling it over — whether to commit. Play it a few times. Notice what happens when you jump too soon, and what happens when you wait too long.</p>
+
+<!-- ═════════════ INTERACTIVE 1: THE DATING GAME ═════════════ -->
+<div class="interactive" id="gameBox">
+  <div class="interactive-title">Try It: The Dating Game</div>
+
+  <div class="game-controls">
+    <div>
+      <label>Pool size:</label>
+      <input type="range" id="poolSlider" min="5" max="20" value="10" style="width:90px;accent-color:var(--accent);">
+      <span class="chip" id="poolVal">10</span>
+    </div>
+    <div>
+      <label>Explore first:</label>
+      <input type="range" id="threshSlider" min="10" max="80" value="37" style="width:90px;accent-color:var(--amber);">
+      <span class="chip" id="threshVal">37%</span>
+    </div>
+    <button class="btn btn-outline" id="resetBtn" style="margin-left:auto;">New Game</button>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-meta">
+      <span id="progLabel">Candidate 0 of 10</span>
+      <span class="phase" id="phaseLabel" style="color:var(--amber);">Observation phase</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-fill" id="progFill" style="width:0%;background:var(--amber);"></div>
+    </div>
+  </div>
+
+  <div id="gameArea" style="min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="font-family:var(--sans);color:var(--text-secondary);font-size:15px;font-style:italic;padding:40px 0;">
+      Press <strong style="color:var(--text);">Meet First Candidate</strong> to begin.
+    </div>
+  </div>
+
+  <div class="btn-group" id="gameBtns">
+    <button class="btn btn-red" id="nextBtn">Meet First Candidate</button>
+    <button class="btn btn-green" id="acceptBtn" style="display:none;">Accept — this is the one</button>
+    <button class="btn btn-outline" id="passBtn" style="display:none;">Pass — keep looking</button>
+  </div>
+
+  <div class="history-row" id="historyRow"></div>
+
+  <p class="footnote">During the amber observation phase, you cannot accept anyone — you're just learning what's out there. Once it ends, accept the first person who beats your benchmark, or risk ending up with whoever's last.</p>
+</div>
+
+<p>If you played a few rounds, you probably noticed something. Commit too eagerly — say, to the very first impressive person — and you almost always miss someone better who was waiting in the wings. Wait too cautiously and the best candidates scroll past you like missed trains. There's a sweet spot somewhere in between, a fulcrum point where patience tips into decisiveness.</p>
+
+<p>That sweet spot is 37%.</p>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 2: WHY OBVIOUS STRATEGIES FAIL ────── -->
+<h2>Why Your Gut Instinct Doesn't Work</h2>
+<div class="section-label">Naive Strategies</div>
+
+<p>Before we reach for calculus, let's acknowledge what most people actually try — and why it fails.</p>
+
+<p><strong>The romantic:</strong> "I'll know it when I feel it." This translates to picking the first person who dazzles you. With a pool of 100, that gives you a 1% chance of success. Your heart may be pure, but your odds are abysmal.</p>
+
+<p><strong>The perfectionist:</strong> "I'll wait until I've seen them all." But by then, every single candidate has walked out the door. You end up with whoever happens to be last — which has exactly the same 1% chance of being the best. Waiting for everything is mathematically identical to choosing nothing.</p>
+
+<p><strong>The pragmatist:</strong> "I'll take the current best whenever they show up." Sounds smart, but watch what happens. If the second person you meet is slightly above average, you commit immediately — with 98% of the pool still unseen. This greedy strategy is like declaring a restaurant your favourite after visiting exactly two.</p>
+
+<p>What all these strategies share is a failure to separate <em>learning</em> from <em>choosing</em>. They conflate two fundamentally different activities: gathering intelligence about the world, and acting on that intelligence. The math tells us these are not the same thing, and the boundary between them has a precise address.</p>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 3: THE DERIVATION ────── -->
+<h2>Where Calculus Meets Commitment</h2>
+<div class="section-label">The Proof</div>
+
+<p>Here is the idea, stripped to its skeleton. You decide in advance to reject the first <em>r</em> candidates, no matter what. You're not wasting this time — you're calibrating. You're learning what "good" looks like so that when "great" walks through the door, you recognise it. After those <em>r</em> observations, you commit to the very next person who is better than everyone you've seen.</p>
+
+<p>The question becomes purely mathematical: what value of <em>r</em> gives you the highest probability of landing the best candidate overall?</p>
+
+<h3>Counting the ways to win</h3>
+
+<p>Suppose the best candidate sits at position <em>k</em> in the queue. You win if two things happen simultaneously. First, the best person must arrive <em>after</em> your exploration window — otherwise you're forced to reject them. Second, nobody between position <em>r + 1</em> and <em>k − 1</em> can be good enough to trigger your acceptance — which means the best of the first <em>k − 1</em> people must fall within your exploration zone.</p>
+
+<p>The probability of that second condition is simply <em>r</em> / (<em>k</em> − 1). Sum this over every possible position of the best candidate, and you get:</p>
+
+<div class="formula">
+  P(r, N) = <span class="hl">Σ</span> from k = r+1 to N &nbsp;of&nbsp; (1/N) · r/(k−1)<br><br>
+  = <span class="hl">(r / N)</span> · Σ from j = r to N−1 &nbsp;of&nbsp; (1 / j)
+</div>
+
+<h3>The continuous trick</h3>
+
+<p>Now for the move that turns a sum into a symphony. For large <em>N</em>, let <em>x</em> = <em>r</em>/<em>N</em> — the fraction of candidates you explore. The sum of 1/<em>j</em> becomes an integral, and the whole expression collapses to something clean and beautiful:</p>
+
+<div class="formula">
+  P(x) ≈ x · ∫ from x to 1 of (1/t) dt<br><br>
+  = x · (−ln x)<br><br>
+  = <span class="hl">−x · ln(x)</span>
+</div>
+
+<h3>Finding the peak</h3>
+
+<p>Differentiate. Set to zero. And out tumbles one of the most satisfying results in all of probability theory:</p>
+
+<div class="formula">
+  dP/dx = −ln(x) − 1 = 0<br><br>
+  ln(x) = −1 &nbsp;&nbsp;→&nbsp;&nbsp; x = e<sup>−1</sup> = <span class="hl">1/e ≈ 0.3679</span><br><br>
+  Maximum success probability: &nbsp; P(1/e) = <span class="hl">1/e ≈ 36.8%</span>
+</div>
+
+<p>Read that again. The optimal fraction to explore is 1/<em>e</em>. And the maximum probability of success — even with the best possible strategy — is also 1/<em>e</em>. The same transcendental constant appears in the question and the answer. This is not a coincidence. It falls directly from the structure of the equation, and it means that <em>e</em> is simultaneously telling you how long to wait and how likely you are to win if you do.</p>
+
+<div class="pullquote">
+  The universe hid the answer to "when should I commit?" inside the same constant that governs compound interest, radioactive decay, and the spiral of a nautilus shell.
+</div>
+
+<p>Here is how the strategy plays out for real numbers:</p>
+
+<table class="data-table">
+  <thead><tr><th>Pool size (N)</th><th>Skip first (r)</th><th>Fraction</th><th>P(choose best)</th></tr></thead>
+  <tbody>
+    <tr><td>3</td><td>1</td><td>33%</td><td class="green-cell">50.0%</td></tr>
+    <tr><td>5</td><td>2</td><td>40%</td><td>43.3%</td></tr>
+    <tr><td>10</td><td>4</td><td>40%</td><td>39.9%</td></tr>
+    <tr><td>20</td><td>7</td><td>35%</td><td>38.4%</td></tr>
+    <tr><td>50</td><td>18</td><td>36%</td><td>37.4%</td></tr>
+    <tr><td>100</td><td>37</td><td>37%</td><td class="hl-cell">37.1%</td></tr>
+    <tr><td>∞</td><td class="blue-cell">37%</td><td class="blue-cell">1/e</td><td class="hl-cell">1/e ≈ 36.8%</td></tr>
+  </tbody>
+</table>
+
+<p>Notice how quickly the numbers converge. By the time you have just 20 candidates, you're already within two percentage points of the mathematical ideal. The 37% rule works astonishingly well even for small pools.</p>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 4: THE CURVE ────── -->
+<h2>The Shape of Patience</h2>
+<div class="section-label">Visualizing the Tradeoff</div>
+
+<p>The function P(<em>x</em>) = −<em>x</em> ln(<em>x</em>) deserves a moment of quiet admiration. It is not symmetric. The left side — the penalty for exploring too little — drops off a cliff. The right side — the penalty for exploring too much — slopes down gently. In plain language: <strong>under-exploring is far more catastrophic than over-exploring.</strong> If you must err, err on the side of patience.</p>
+
+<p>Below, the dark curve traces the theory. Click "Run Simulation" to watch thousands of random trials pile up as blue bars, converging onto the prediction like witnesses corroborating a story.</p>
+
+<!-- ═════════════ INTERACTIVE 2: THE CURVE ═════════════ -->
+<div class="interactive">
+  <div class="interactive-title">Explore: The Optimal Stopping Curve</div>
+  <canvas id="curveCanvas" width="640" height="340"></canvas>
+  <div class="slider-group">
+    <label>Pool size (N):</label>
+    <input type="range" id="curveN" min="5" max="100" value="30">
+    <span class="val" id="curveNVal">30</span>
+  </div>
+  <div class="slider-group">
+    <label>Simulations:</label>
+    <input type="range" id="simCount" min="500" max="10000" value="3000" step="500">
+    <span class="val" id="simCountVal">3000</span>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-red" id="runCurveBtn">Run Simulation</button>
+    <button class="btn btn-outline" id="clearCurveBtn">Clear</button>
+  </div>
+  <p class="footnote">The dark curve is theory: P(x) = −x·ln(x). Blue bars are empirical win rates from Monte Carlo simulation. Red dashes mark the peak at 1/e. Watch the bars converge as trials accumulate.</p>
+</div>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 5: HISTORY ────── -->
+<h2>A Problem in Search of an Author</h2>
+<div class="section-label">History</div>
+
+<p>Like many great ideas, the secretary problem has origins that are slightly disreputable and wonderfully unclear. It almost certainly circulated as a parlour puzzle in the 1950s — the kind of problem mathematicians scribble on napkins. The earliest known formal statement appeared in a RAND Corporation paper around 1960, but nobody is quite sure who wrote it down first.</p>
+
+<div class="history-box">
+<h3>The Cast of Characters</h3>
+<div style="float:right;margin:0 0 14px 20px;text-align:center;max-width:150px;">
+  <img src="https://i.postimg.cc/13pmSRbh/Martin-Gardner.jpg" alt="Martin Gardner" style="width:140px;border-radius:8px;border:2px solid #C4B5FD;box-shadow:0 2px 10px rgba(0,0,0,.12);">
+  <div style="font-size:11px;color:var(--purple);margin-top:5px;font-family:var(--sans);font-style:italic;">Martin Gardner (1914–2010)</div>
+</div>
+<p>The problem's journey into popular culture belongs almost entirely to <strong>Martin Gardner</strong>, whose February 1960 "Mathematical Games" column in <em>Scientific American</em> recast it as the "Sultan's Dowry Problem" — a sultan choosing the most beautiful of <em>N</em> candidates in sequence. Gardner understood, perhaps better than anyone alive, that the best mathematics travels inside a story that makes people feel something.</p>
+<p>The definitive proof came in a 1966 paper by <strong>John P. Gilbert</strong> and <strong>Frederick Mosteller</strong> in the <em>Journal of the American Statistical Association</em>. And then there is the Kepler footnote — our astronomer, methodically evaluating eleven candidates, circling back to number five, and writing afterwards with obvious satisfaction that careful comparison had led him to the best choice. Whether he solved an optimal stopping problem or was simply being Kepler, we cannot say.</p>
+</div>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 6: BROADER LESSONS ────── -->
+<h2>The Explore–Exploit Dilemma</h2>
+<div class="section-label">The Deeper Pattern</div>
+
+<p>The secretary problem is a single movement in a much larger symphony. The tension it captures — gather information or act on it? — surfaces everywhere.</p>
+
+<p>A bumblebee deciding when to leave one flower patch for the next is solving a cousin of this problem, tuned by millions of years of natural selection. A venture capitalist screening startups, an employer interviewing job applicants, a web browser deciding whether to keep loading or use cached data — they are all navigating the same fork in the road. The mathematics changes in the details, but the structure is the same: there comes a moment when one more observation costs more than it teaches, and at that moment, you must act.</p>
+
+<p>The 37% rule is not just a number. It's a proof that patience and decisiveness are not opposites. Each has its place, and the dividing line between them is a transcendental number.</p>
+
+<div class="pullquote">
+  "The optimal amount of time to spend gathering data before acting is never zero, and never everything — it's always somewhere in between. In this case, it's precisely 1/e."
+  <cite>— Brian Christian & Tom Griffiths, Algorithms to Live By</cite>
+</div>
+
+<div class="divider">· · ·</div>
+
+<!-- ────── SECTION 7: THE ASTERISK ────── -->
+<h2>The Asterisk (Because Life Is Not a Math Problem)</h2>
+<div class="section-label">Caveats</div>
+
+<p>Of course, life isn't this clean. The classical model assumes you know how many candidates you'll ever meet (you don't). It assumes preferences are stable (they shift). It assumes rejected candidates can never return (sometimes they can, as Kepler proved). And it assumes there is a single objectively best person for you — a claim that is, to put it gently, philosophically fraught.</p>
+
+<p>But that's not the lesson. The lesson is that even the most profoundly human question — <em>when do I stop looking and commit?</em> — contains within it something precise enough to be solved. The answer won't tell you whom to love. But it will tell you something important about <em>how to search</em>: that the reckless and the timid both lose, that learning requires a period of deliberate non-commitment, and that the turning point between exploration and action has a name.</p>
+
+<p>Its name is 1/<em>e</em>.</p>
+
+<p>Next time someone asks, "How did you know they were the one?" you'll have an answer that is simultaneously romantic and mathematical: <em>I watched, I learned, and after about 37%, I trusted what I'd seen.</em></p>
+
+<p>It's not a guarantee. It's just the best anyone can do under uncertainty. And maybe that's enough.</p>
+
+</div>
+
+<!-- ═════════════ SCRIPTS ═════════════ -->
+<script>
+// ── Hero particle canvas ──
+(function(){
+  const c=document.getElementById('heroCanvas');
+  const ctx=c.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=c.width=c.clientWidth;H=c.height=c.clientHeight;init();}
+  function init(){
+    particles=[];
+    for(let i=0;i<60;i++){
+      particles.push({
+        x:Math.random()*W,y:Math.random()*H,
+        r:Math.random()*2+.5,
+        dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,
+        o:Math.random()*.4+.1
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(248,113,113,${p.o})`;ctx.fill();
+    });
+    // Draw faint connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(248,113,113,${.06*(1-d/120)})`;
+          ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+// ── DATING GAME ──
+(function(){
+  const AVATARS=['🧑','👩','👨','🧔','👱','🧕','👲','🧑‍🦱','🧑‍🦰','👩‍🦳','🧑‍🦲','👩‍🦱','🧑‍🎤','👩‍🎓','🧑‍💼','👩‍🔬','🧑‍🎨','👩‍🏫','🧑‍🚀','👩‍⚕️'];
+  const BETTER=['Best you\'ve met so far ★','Better than everyone before ✦','A new benchmark — the best yet ✦','Outshines everyone so far ★'];
+  const WORSE=['Not as good as your best','Below your current benchmark','Doesn\'t beat the best you\'ve seen','Falls short of the top'];
+
+  const poolSlider=document.getElementById('poolSlider');
+  const poolValEl=document.getElementById('poolVal');
+  const threshSlider=document.getElementById('threshSlider');
+  const threshValEl=document.getElementById('threshVal');
+  const resetBtn=document.getElementById('resetBtn');
+  const nextBtn=document.getElementById('nextBtn');
+  const acceptBtn=document.getElementById('acceptBtn');
+  const passBtn=document.getElementById('passBtn');
+  const gameArea=document.getElementById('gameArea');
+  const historyRow=document.getElementById('historyRow');
+  const progLabel=document.getElementById('progLabel');
+  const phaseLabel=document.getElementById('phaseLabel');
+  const progFill=document.getElementById('progFill');
+
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+  let G={};
+
+  function initGame(){
+    const N=+poolSlider.value;
+    const pct=+threshSlider.value;
+    const r=Math.max(1,Math.min(N-1,Math.round(N*pct/100)));
+    const ranks=shuffle([...Array(N)].map((_,i)=>i+1));
+    const avatars=shuffle([...AVATARS]).slice(0,N);
+    G={N,r,ranks,avatars,cur:0,bestRank:N+1,done:false,started:false};
+    nextBtn.style.display='inline-block';nextBtn.disabled=false;nextBtn.textContent='Meet First Candidate';
+    acceptBtn.style.display='none';passBtn.style.display='none';
+    progFill.style.width='0%';progFill.style.background='var(--amber)';
+    progLabel.textContent=`Candidate 0 of ${N}`;
+    phaseLabel.textContent='Observation phase';phaseLabel.style.color='var(--amber)';
+    gameArea.innerHTML=`<div style="font-family:var(--sans);color:var(--text-secondary);font-size:15px;font-style:italic;padding:40px 0;">You have <strong style="color:var(--text);">${N} candidates</strong>. You'll observe the first <strong style="color:var(--amber);">${r}</strong> without accepting.<br>After that, accept the first person who beats your benchmark.</div>`;
+    historyRow.innerHTML='';
+  }
+
+  function showCard(){
+    const i=G.cur,rank=G.ranks[i],avatar=G.avatars[i];
+    const inObs=i<G.r,isBest=rank<G.bestRank,isLast=i===G.N-1;
+    const num=i+1;
+    const pct=(num/G.N*100);
+    progFill.style.width=Math.min(pct,(G.r/G.N*100))+'%';
+    progLabel.textContent=`Candidate ${num} of ${G.N}`;
+
+    if(inObs){
+      progFill.style.background='var(--amber)';
+      phaseLabel.textContent='Observation — watch only';phaseLabel.style.color='var(--amber)';
+    } else {
+      phaseLabel.textContent='Decision phase — choose wisely';phaseLabel.style.color='var(--blue)';
+    }
+
+    let comp='';
+    if(i===0) comp='<span style="color:var(--text-secondary);font-style:italic;">First candidate — no comparison yet.</span>';
+    else if(isBest) comp=`<span style="color:var(--green);font-weight:700;">${pick(BETTER)}</span>`;
+    else comp=`<span style="color:var(--text-secondary);">${pick(WORSE)}</span>`;
+
+    let badge;
+    if(inObs) badge=`<div class="badge" style="background:var(--amber-light);border:1.5px solid #F59E0B;color:#92400E;">Observing — cannot accept</div>`;
+    else if(isLast) badge=`<div class="badge" style="background:#FEE2E2;border:1.5px solid var(--accent);color:#9F1239;">Last candidate</div>`;
+    else badge=`<div class="badge" style="background:var(--blue-light);border:1.5px solid var(--blue);color:#1E3A8A;">Your call — accept or pass?</div>`;
+
+    gameArea.innerHTML=`<div class="candidate-card" style="border-color:${inObs?'#F59E0B':'var(--blue)'};">${badge}<div class="avatar">${avatar}</div><div class="name">Candidate #${num}</div><div class="comparison">${comp}</div></div>`;
+
+    if(inObs){
+      nextBtn.style.display='inline-block';
+      nextBtn.textContent=i===G.r-1?'Next (observation ends after this)':'Next';
+      acceptBtn.style.display='none';passBtn.style.display='none';
+    } else if(isLast){
+      nextBtn.style.display='none';
+      acceptBtn.style.display='inline-block';acceptBtn.textContent='Accept (last one)';
+      passBtn.style.display='none';
+    } else {
+      nextBtn.style.display='none';
+      acceptBtn.style.display='inline-block';acceptBtn.textContent='Accept — this is the one';
+      passBtn.style.display='inline-block';
+    }
+  }
+
+  function addHist(i,verdict){
+    const avatar=G.avatars[i],inObs=i<G.r;
+    let bg,bc;
+    if(verdict==='observe'){bg='var(--amber-light)';bc='#F59E0B';}
+    else if(verdict==='accept'){bg='var(--green-light)';bc='#34D399';}
+    else{bg='#FEE2E2';bc='#FCA5A5';}
+    const el=document.createElement('span');
+    el.className='history-dot';
+    el.innerHTML=`<span class="circle" style="background:${bg};border-color:${bc};">${avatar}</span><span>#${i+1}</span>`;
+    historyRow.appendChild(el);
+  }
+
+  function advance(){
+    const i=G.cur,rank=G.ranks[i];
+    if(rank<G.bestRank) G.bestRank=rank;
+    addHist(i,'observe');
+    G.cur++;
+    if(G.cur<G.N) showCard();
+  }
+
+  function doAccept(){
+    const i=G.cur;
+    addHist(i,'accept');
+    G.done=true;
+    acceptBtn.style.display='none';passBtn.style.display='none';nextBtn.style.display='none';
+    endGame(i);
+  }
+
+  function doPass(){
+    const i=G.cur,rank=G.ranks[i];
+    if(rank<G.bestRank) G.bestRank=rank;
+    addHist(i,'pass');
+    G.cur++;
+    if(G.cur<G.N) showCard();
+    else doAccept();
+  }
+
+  function endGame(idx){
+    const chosenRank=G.ranks[idx];
+    const isWin=chosenRank===1;
+    const bestPos=G.ranks.indexOf(1)+1;
+
+    // reveal ranks
+    historyRow.querySelectorAll('.history-dot').forEach((el,i)=>{
+      const r=G.ranks[i];
+      const b=document.createElement('span');
+      b.style.cssText='font-weight:700;font-size:10px;color:'+(r===1?'var(--green)':r<=3?'var(--blue)':'var(--text-secondary)');
+      b.textContent=r===1?'★1':'#'+r;
+      el.appendChild(b);
+    });
+
+    let html;
+    if(isWin){
+      html=`<div style="font-size:48px;margin-bottom:10px;">🎉</div><div style="font-family:var(--sans);font-size:20px;font-weight:700;color:var(--green);margin-bottom:6px;">You found the best one!</div><div style="font-family:var(--sans);font-size:14px;color:var(--text-secondary);">Candidate #${bestPos} was the best of ${G.N}. You chose them. Perfect.</div>`;
+      progFill.style.width='100%';progFill.style.background='var(--green)';
+      phaseLabel.textContent='Found the best!';phaseLabel.style.color='var(--green)';
+    } else {
+      const why=bestPos<=G.r?`The best was #${bestPos} — they appeared during observation, so you couldn't accept.`:`The best was #${bestPos}, but you settled on someone else.`;
+      html=`<div style="font-size:48px;margin-bottom:10px;">💔</div><div style="font-family:var(--sans);font-size:20px;font-weight:700;color:var(--accent);margin-bottom:6px;">You picked rank #${chosenRank} of ${G.N}</div><div style="font-family:var(--sans);font-size:14px;color:var(--text-secondary);">${why}</div>`;
+      progFill.style.width='100%';progFill.style.background='var(--accent)';
+      phaseLabel.textContent='Missed the best (#'+bestPos+')';phaseLabel.style.color='var(--accent)';
+    }
+    gameArea.innerHTML=`<div class="candidate-card" style="border-color:${isWin?'#34D399':'var(--accent)'};">${html}<div style="margin-top:14px;font-family:var(--sans);font-size:12px;color:var(--text-secondary);">True ranks revealed below. Click <em>New Game</em> to try again.</div></div>`;
+  }
+
+  nextBtn.addEventListener('click',()=>{
+    if(G.done) return;
+    if(!G.started){G.started=true;showCard();return;}
+    if(G.cur<G.r){advance();if(G.cur===G.r&&G.cur<G.N) showCard();}
+  });
+  acceptBtn.addEventListener('click',doAccept);
+  passBtn.addEventListener('click',doPass);
+  resetBtn.addEventListener('click',initGame);
+  poolSlider.addEventListener('input',()=>{poolValEl.textContent=poolSlider.value;initGame();});
+  threshSlider.addEventListener('input',()=>{threshValEl.textContent=threshSlider.value+'%';initGame();});
+  initGame();
+})();
+
+// ── OPTIMAL STOPPING CURVE ──
+(function(){
+  const cc=document.getElementById('curveCanvas');
+  const ctx=cc.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  let CW,CH;
+  const pad={t:32,r:30,b:50,l:60};
+  let empBars=null;
+
+  function sizeCanvas(){
+    CW=cc.clientWidth;CH=cc.clientHeight;
+    cc.width=CW*dpr;cc.height=CH*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function W(){return CW-pad.l-pad.r;}
+  function H(){return CH-pad.t-pad.b;}
+
+  function draw(bars){
+    sizeCanvas();
+    const w=W(),h=H();
+    ctx.clearRect(0,0,CW,CH);
+    ctx.fillStyle='#FAF7F2';ctx.fillRect(0,0,CW,CH);
+    ctx.fillStyle='#fff';ctx.fillRect(pad.l,pad.t,w,h);
+
+    // grid
+    ctx.strokeStyle='#ECECEC';ctx.lineWidth=1;
+    for(let i=0;i<=5;i++){
+      const gy=pad.t+h-(i/5)*h;
+      ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(pad.l+w,gy);ctx.stroke();
+      ctx.fillStyle='#888';ctx.font='11px "DM Sans",sans-serif';
+      ctx.textAlign='right';ctx.fillText((i*20)+'%',pad.l-8,gy+4);
+    }
+    for(let i=0;i<=5;i++){
+      const gx=pad.l+(i/5)*w;
+      ctx.beginPath();ctx.moveTo(gx,pad.t);ctx.lineTo(gx,pad.t+h);ctx.stroke();
+      ctx.fillStyle='#888';ctx.textAlign='center';
+      ctx.fillText((i*20)+'%',gx,pad.t+h+18);
+    }
+
+    ctx.fillStyle='#444';ctx.font='13px "DM Sans",sans-serif';ctx.textAlign='center';
+    ctx.fillText('Exploration fraction (r / N)',pad.l+w/2,CH-6);
+    ctx.save();ctx.translate(14,pad.t+h/2);ctx.rotate(-Math.PI/2);
+    ctx.fillText('P(choose best)',0,0);ctx.restore();
+
+    // empirical bars
+    if(bars){
+      const N=+document.getElementById('curveN').value;
+      bars.forEach((rate,ri)=>{
+        if(ri===0||ri>=N)return;
+        const xf=ri/N;
+        const bw=Math.max(2,w/N*.65);
+        const bx=pad.l+xf*w-bw/2;
+        const bh=rate*h;
+        ctx.fillStyle='rgba(29,78,216,.32)';
+        ctx.fillRect(bx,pad.t+h-bh,bw,bh);
+      });
+    }
+
+    // theory curve
+    ctx.beginPath();ctx.strokeStyle='#0C0A09';ctx.lineWidth=2.5;
+    let first=true;
+    for(let px=1;px<=w;px++){
+      const x=px/w;
+      const y=-x*Math.log(x);
+      const cy=pad.t+h-Math.min(y,1)*h;
+      if(first){ctx.moveTo(pad.l+px,cy);first=false;}
+      else ctx.lineTo(pad.l+px,cy);
+    }
+    ctx.stroke();
+
+    // 1/e dashes
+    const optX=pad.l+(1/Math.E)*w;
+    const optY=pad.t+h-(1/Math.E)*h;
+    ctx.strokeStyle='#B91C1C';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(optX,pad.t);ctx.lineTo(optX,pad.t+h);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pad.l,optY);ctx.lineTo(pad.l+w,optY);ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();ctx.arc(optX,optY,5,0,Math.PI*2);
+    ctx.fillStyle='#B91C1C';ctx.fill();
+    ctx.fillStyle='#B91C1C';ctx.font='bold 12px "DM Sans",sans-serif';ctx.textAlign='left';
+    ctx.fillText('x = 1/e ≈ 37%',optX+10,optY-10);
+    ctx.fillText('P = 1/e ≈ 36.8%',optX+10,optY+14);
+
+    ctx.strokeStyle='#ccc';ctx.lineWidth=1;ctx.strokeRect(pad.l,pad.t,w,h);
+  }
+
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+  function runMC(){
+    const N=+document.getElementById('curveN').value;
+    const K=+document.getElementById('simCount').value;
+    const wins=new Array(N+1).fill(0);
+    for(let s=0;s<K;s++){
+      const seq=shuffle([...Array(N)].map((_,i)=>i+1));
+      for(let r=1;r<N;r++){
+        const bench=Math.min(...seq.slice(0,r));
+        let chosen=seq[N-1];
+        for(let i=r;i<N;i++){if(seq[i]<bench){chosen=seq[i];break;}}
+        if(chosen===1)wins[r]++;
+      }
+    }
+    empBars=wins.map(w=>w/K);
+    draw(empBars);
+  }
+
+  document.getElementById('curveN').addEventListener('input',e=>{
+    document.getElementById('curveNVal').textContent=e.target.value;
+    empBars=null;draw(null);
+  });
+  document.getElementById('simCount').addEventListener('input',e=>{
+    document.getElementById('simCountVal').textContent=e.target.value;
+  });
+  document.getElementById('runCurveBtn').addEventListener('click',runMC);
+  document.getElementById('clearCurveBtn').addEventListener('click',()=>{empBars=null;draw(null);});
+  window.addEventListener('resize',()=>draw(empBars));
+  draw(null);
+})();
+</script>
+</body>
+</html>
